@@ -16,8 +16,7 @@ model User {
   email          String   @db.VarChar(100)
   hashedPassword String   @db.VarChar(200)
   salt           String   @db.VarChar(100)
-  token          Token    @relation(fields: [tokenId], references: [id])
-  tokenId        Int
+  token          Token?
   createdAt      DateTime @default(dbgenerated("now()")) @db.Timestamp
   updatedAt      DateTime @default(dbgenerated("now()")) @db.Timestamp
 
@@ -37,7 +36,8 @@ model Product {
 
 model Token {
   id            Int      @id @default(autoincrement())
-  user          User[]
+  user          User     @relation(fields: [userId], references: [id])
+  userId        Int      @unique
   tokenString   String   @db.VarChar(250)
   active        Boolean  @default(true)
   createdAt     DateTime @default(dbgenerated("now()")) @db.Timestamp
