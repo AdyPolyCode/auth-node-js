@@ -1,0 +1,35 @@
+{
+    "name": "auth-node",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/server.js",
+    "scripts": {
+        "start": "node server",
+        "dev": "nodemon server"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AdyPolyCode/auth-node-js.git"
+    },
+    "keywords": [],
+    "author": "Ady",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/AdyPolyCode/auth-node-js/issues"
+    },
+    "homepage": "https://github.com/AdyPolyCode/auth-node-js#readme",
+    "devDependencies": {
+        "colors": "^1.4.0",
+        "nodemon": "^2.0.14",
+        "winston": "^3.3.3"
+    },
+    "dependencies": {
+        "@prisma/client": "^3.4.1",
+        "crypto-js": "^4.1.1",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "http-status-codes": "^2.1.4",
+        "morgan": "^1.10.0",
+        "prisma": "^3.4.1"
+    }
+}

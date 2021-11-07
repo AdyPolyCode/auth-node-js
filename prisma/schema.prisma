@@ -1,0 +1,46 @@
+// Prisma schema file
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  username       String   @db.VarChar(20)
+  email          String   @db.VarChar(100)
+  hashedPassword String   @db.VarChar(200)
+  salt           String   @db.VarChar(100)
+  token          Token    @relation(fields: [tokenId], references: [id])
+  tokenId        Int
+  createdAt      DateTime @default(dbgenerated("now()")) @db.Timestamp
+  updatedAt      DateTime @default(dbgenerated("now()")) @db.Timestamp
+
+  @@unique([username, email])
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(50)
+  description String?  @db.VarChar(200)
+  price       Decimal  @db.Money
+  createdAt   DateTime @default(dbgenerated("now()")) @db.Timestamp
+  updatedAt   DateTime @default(dbgenerated("now()")) @db.Timestamp
+
+  @@index([name])
+}
+
+model Token {
+  id            Int      @id @default(autoincrement())
+  user          User[]
+  tokenString   String   @db.VarChar(250)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(dbgenerated("now()")) @db.Timestamp
+  updatedAt     DateTime @default(dbgenerated("now()")) @db.Timestamp
+  deactivatedAt DateTime @default(dbgenerated("null"))
+}
