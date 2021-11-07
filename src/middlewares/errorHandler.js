@@ -32,7 +32,7 @@ const errorHandler = (err, req, res, next) => {
         error = errors[err.code];
 
         if (!error.message) {
-            error.message = `Product with '${err.meta.target}' already exists`;
+            error.message = `Target with '${err.meta.target}' already exists`;
         }
     }
 
