@@ -40,4 +40,6 @@ model Token {
   active      Boolean  @default(true)
   createdAt   DateTime @default(dbgenerated("now()")) @db.Timestamp
   updatedAt   DateTime @default(dbgenerated("now()")) @db.Timestamp
+
+  @@index([userId])
 }
