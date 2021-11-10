@@ -39,7 +39,6 @@ const errorHandler = (err, req, res, next) => {
     // Invalid Id || Missing value from body
     if (err instanceof Prisma.PrismaClientValidationError) {
         let msg = err.message.split('Argument')[1];
-        msg = msg.split('\n')[0];
         error.message = msg;
     }
 
