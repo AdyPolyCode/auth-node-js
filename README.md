@@ -73,4 +73,4 @@ $ npm run dev
 
 ### License
 
-License can be accessed by clicking [here]() or in the repository directly.
+License can be accessed by clicking [here](https://github.com/AdyPolyCode/auth-node-js/blob/main/LICENSE) or in the repository directly.
