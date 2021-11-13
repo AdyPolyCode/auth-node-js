@@ -1,7 +1,6 @@
+const { Prisma } = require('@prisma/client');
 const { CustomError } = require('../errors');
 const logger = require('../utils/logger');
-
-const { Prisma } = require('@prisma/client');
 
 const errors = {
     P2002: {
@@ -38,7 +37,7 @@ const errorHandler = (err, req, res, next) => {
 
     // Invalid Id || Missing value from body
     if (err instanceof Prisma.PrismaClientValidationError) {
-        let msg = err.message.split('Argument')[1];
+        const msg = err.message.split('Argument')[1];
         error.message = msg;
     }
 
