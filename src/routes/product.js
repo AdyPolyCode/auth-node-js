@@ -1,5 +1,5 @@
-const { validateBody } = require('../middlewares');
 const router = require('express').Router();
+const { validateBody } = require('../middlewares');
 
 const {
     getAll,
