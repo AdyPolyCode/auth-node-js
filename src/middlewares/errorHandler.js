@@ -38,7 +38,10 @@ const errorHandler = (err, req, res, next) => {
     // Invalid Id || Missing value from body
     if (err instanceof Prisma.PrismaClientValidationError) {
         const msg = err.message.split('Argument')[1];
-        error.message = msg;
+        error.message = msg.includes('username')
+            ? 'Please enter a username'
+            : 'Please enter an email';
+        error.code = 400;
     }
 
     res.status(error.code || 500).json({
