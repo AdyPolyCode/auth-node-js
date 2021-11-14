@@ -1,6 +1,6 @@
 const { asyncHandler } = require('../middlewares');
 const { UnAuthorized, CustomError } = require('../errors');
-const authService = require('../services/auth/auth.service');
+const authService = require('../services/auth.service');
 
 const login = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;
