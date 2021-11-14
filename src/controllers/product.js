@@ -1,28 +1,9 @@
 const { asyncHandler } = require('../middlewares');
 
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient({ rejectOnNotFound: true });
+const productService = require('../services/product.service');
 
 const getAll = asyncHandler(async (req, res, next) => {
-    /*
-        get page query string from url
-        parse string to integer && create skip number for pagination
-        check if skip value is a pozitive value
-    */
-    let { page } = req.query;
-
-    page = parseInt(page, 10);
-    toSkip = (page - 1 || 0) * 3;
-
-    if (toSkip < 0) toSkip = 0;
-
-    /*
-        return list of products based on pagination
-    */
-    const products = await prisma.product.findMany({
-        skip: toSkip,
-        take: 3,
-    });
+    const products = await productService.getAll(req.query);
 
     res.status(200).json({
         message: 'Successfully fetched',
@@ -32,12 +13,7 @@ const getAll = asyncHandler(async (req, res, next) => {
 });
 
 const getOne = asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
-    const product = await prisma.product.findUnique({
-        where: {
-            id: Number(id),
-        },
-    });
+    const product = await productService.getOne(req.params.id);
 
     res.status(200).json({
         message: 'Successfully fetched',
@@ -46,9 +22,7 @@ const getOne = asyncHandler(async (req, res, next) => {
 });
 
 const createOne = asyncHandler(async (req, res, next) => {
-    const product = await prisma.product.create({
-        data: req.body,
-    });
+    const product = await productService.createOne(req.body);
 
     res.status(201).json({
         message: 'Successfully created',
@@ -57,14 +31,7 @@ const createOne = asyncHandler(async (req, res, next) => {
 });
 
 const updateOne = asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
-
-    const product = await prisma.product.update({
-        where: {
-            id: Number(id),
-        },
-        data: req.body,
-    });
+    const product = await productService.updateOne(req.params.id, req.body);
 
     res.status(200).json({
         message: 'Successfully updated',
@@ -73,13 +40,7 @@ const updateOne = asyncHandler(async (req, res, next) => {
 });
 
 const deleteOne = asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
-
-    const product = await prisma.product.delete({
-        where: {
-            id: Number(id),
-        },
-    });
+    const product = await productService.deleteOne(req.params.id);
 
     res.status(200).json({
         message: 'Successfully deleted',
