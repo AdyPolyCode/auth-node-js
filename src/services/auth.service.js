@@ -4,7 +4,7 @@ const tokenService = require('./token.service');
 
 const { UnAuthorized } = require('../errors');
 
-const register = async (username, email, password) => {
+const register = async ({ username, email, password }) => {
     const salt = encryptionService.createSalt();
 
     const hash = encryptionService.createHash(salt, password);
