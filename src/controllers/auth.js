@@ -30,17 +30,11 @@ const login = asyncHandler(async (req, res, next) => {
 });
 
 const register = asyncHandler(async (req, res, next) => {
-    const { username, email, password } = req.body;
-
-    if (!username || !email || !password) {
-        return next(new CustomError('Missing parameters'));
+    if (!req.body.password) {
+        return next(new CustomError('Please enter a password'));
     }
 
-    const { user, token } = await authService.register(
-        username,
-        email,
-        password
-    );
+    const { user, token } = await authService.register(req.body);
 
     res.status(201).json({
         message: `${user.username} successfully created`,
