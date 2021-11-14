@@ -1,13 +1,12 @@
 const { asyncHandler } = require('../middlewares');
-const { UnAuthorized } = require('../errors');
+const { UnAuthorized, CustomError } = require('../errors');
 const authService = require('../services/auth/auth.service');
 
-// TODO: finish error handling
 const login = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return next();
+        return next(new CustomError('Email & Password must be provided', 400));
     }
 
     const validLogin = await authService.login(email, password);
@@ -34,7 +33,7 @@ const register = asyncHandler(async (req, res, next) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-        return next();
+        return next(new CustomError('Missing parameters'));
     }
 
     const { user, token } = await authService.register(
@@ -52,11 +51,7 @@ const register = asyncHandler(async (req, res, next) => {
 });
 
 const logout = asyncHandler(async (req, res, next) => {
-    const validLogout = await authService.logout(req.accessToken);
-
-    if (!validLogout) {
-        return next();
-    }
+    await authService.logout(req.accessToken);
 
     res.status(200).json({
         message: 'Successfully logged out',
