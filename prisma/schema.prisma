@@ -16,7 +16,7 @@ model User {
   email          String    @unique @db.VarChar(100)
   hashedPassword String    @db.VarChar(200)
   salt           String    @db.VarChar(100)
-  products       Product[]
+  product        Product[]
   token          Token[]
   createdAt      DateTime  @default(dbgenerated("now()")) @db.Timestamp
   updatedAt      DateTime  @default(dbgenerated("now()")) @db.Timestamp
@@ -27,7 +27,7 @@ model Product {
   name        String   @unique @db.VarChar(50)
   description String?  @db.VarChar(200)
   price       Decimal  @db.Money
-  user        User     @relation(fields: [userId], references: [id])
+  user        User?    @relation(fields: [userId], references: [id])
   userId      Int      @db.Integer
   createdAt   DateTime @default(dbgenerated("now()")) @db.Timestamp
   updatedAt   DateTime @default(dbgenerated("now()")) @db.Timestamp
@@ -36,13 +36,13 @@ model Product {
 }
 
 model Token {
-  id          Int      @id @default(autoincrement())
-  user        User     @relation(fields: [userId], references: [id])
-  userId      Int      @db.Integer
-  tokenString String   @unique @db.VarChar(250)
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(dbgenerated("now()")) @db.Timestamp
-  updatedAt   DateTime @default(dbgenerated("now()")) @db.Timestamp
+  id            Int      @id @default(autoincrement())
+  user          User?    @relation(fields: [userId], references: [id])
+  userId        Int      @db.Integer
+  tokenString   String   @unique @db.VarChar(250)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(dbgenerated("now()")) @db.Timestamp
+  deactivatedAt DateTime @updatedAt @db.Timestamp
 
   @@index([userId, tokenString])
 }
