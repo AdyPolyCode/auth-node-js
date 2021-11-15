@@ -2,8 +2,6 @@ const encryptionService = require('./encryption.service');
 const userService = require('./user.service');
 const tokenService = require('./token.service');
 
-const { UnAuthorized } = require('../errors');
-
 const register = async ({ username, email, password }) => {
     const salt = encryptionService.createSalt();
 
@@ -21,19 +19,7 @@ const register = async ({ username, email, password }) => {
 const login = async (email, password) => {
     const user = await userService.getByEmail(email);
 
-    if (!user) {
-        throw new UnAuthorized('Invalid credentials');
-    }
-
-    const validPassword = encryptionService.comparePassword(
-        user.salt,
-        password,
-        user.hashedPassword
-    );
-
-    if (!validPassword) {
-        throw new UnAuthorized('Invalid credentials');
-    }
+    encryptionService.comparePassword(user.salt, password, user.hashedPassword);
 
     const tokenString = encryptionService.createUniqueToken();
 
