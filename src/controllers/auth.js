@@ -5,15 +5,7 @@ const authService = require('../services/auth.service');
 const login = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-        return next(new CustomError('Email & Password must be provided', 400));
-    }
-
     const validLogin = await authService.login(email, password);
-
-    if (!validLogin) {
-        return next(new UnAuthorized('Invalid credentials'));
-    }
 
     const { user, token } = validLogin;
 
@@ -30,10 +22,6 @@ const login = asyncHandler(async (req, res, next) => {
 });
 
 const register = asyncHandler(async (req, res, next) => {
-    if (!req.body.password) {
-        return next(new CustomError('Please enter a password'));
-    }
-
     const { user, token } = await authService.register(req.body);
 
     res.status(201).json({
