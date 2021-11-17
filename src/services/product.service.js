@@ -28,7 +28,7 @@ const getAll = async (options) => {
 const getOne = async (productId) => {
     const product = await Product.findFirst({
         where: {
-            id: productId,
+            id: Number(productId) || -1,
         },
     });
 
@@ -54,7 +54,7 @@ const createOne = async ({ name, description, price }) => {
 const updateOne = async (productId, data) => {
     const product = await Product.update({
         where: {
-            id: productId,
+            id: Number(productId) || -1,
         },
         data,
     });
@@ -69,7 +69,7 @@ const updateOne = async (productId, data) => {
 const deleteOne = async (productId) => {
     const product = await Product.delete({
         where: {
-            id: productId,
+            id: Number(productId) || -1,
         },
     });
 
