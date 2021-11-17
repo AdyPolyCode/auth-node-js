@@ -1,5 +1,6 @@
 const { randomBytes, createHmac } = require('crypto');
 const { v4: uuidv4 } = require('uuid');
+const { UnAuthorized } = require('../errors');
 
 const createHash = (salt, password) => {
     const hash = createHmac('sha256', password).update(salt).digest('hex');
@@ -16,13 +17,15 @@ const createSalt = () => {
 const comparePassword = (salt, password, hashedPassword) => {
     const hash = createHmac('sha256', password).update(salt).digest('hex');
 
-    return hash === hashedPassword;
+    if (hash !== hashedPassword) {
+        throw new UnAuthorized('Invalid credentials');
+    }
 };
 
 const createUniqueToken = () => {
-    const tokenString = uuidv4() + Date.now();
+    const uuidTimestamp = uuidv4() + Math.floor(Date.now() / 1000);
 
-    return tokenString;
+    return uuidTimestamp;
 };
 
 const encryptionService = {
