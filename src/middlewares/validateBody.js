@@ -1,10 +1,13 @@
 const { ValidationError } = require('../errors');
 
-const validateBody = (req, res, next) => {
-    if (!Object.keys(req.body).length) {
-        return next(new ValidationError('Enter at least one value'));
+const validateBody = (schema) => async (req, res, next) => {
+    try {
+        const valid = await schema.validateAsync(req.body);
+
+        next();
+    } catch (error) {
+        next(new ValidationError(error.details[0].message));
     }
-    next();
 };
 
 module.exports = validateBody;
