@@ -69,7 +69,9 @@ const getByTokenString = async (tokenString) => {
     const user = await User.findFirst({
         where: {
             token: {
-                tokenString,
+                some: {
+                    tokenString,
+                },
             },
         },
     });
