@@ -1,15 +1,21 @@
+const userService = require('../services/user.service');
+const tokenService = require('../services/token.service');
 const { UnAuthorized } = require('../errors');
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
     const headerToken = req.headers.authorization;
-
     if (!headerToken || !headerToken.startsWith('Bearer ')) {
-        return next(new UnAuthorized('Please log in first'));
+        return next(new UnAuthorized('Invalid token'));
     }
 
-    const token = headerToken.split(' ')[1];
+    const tokenString = req.headers.authorization.split(' ');
 
-    req.accessToken = token;
+    const token = await tokenService.getByTokenString(tokenString[1]);
+    if (!token.active) {
+        return next(new UnAuthorized('Invalid token, token is inactive'));
+    }
+
+    await userService.getByTokenString(tokenString[1]);
 
     next();
 };
