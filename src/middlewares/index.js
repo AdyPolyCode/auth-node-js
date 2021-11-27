@@ -1,8 +1,8 @@
-const asyncHandler = require('./asyncHandler');
+const asyncHandler = require('./async-handler');
 const auth = require('./auth');
-const errorHandler = require('./errorHandler');
-const notFoundHandler = require('./notFoundHandler');
-const validateBody = require('./validateBody');
+const errorHandler = require('./error-handler');
+const notFoundHandler = require('./not-found-handler');
+const validateBody = require('./validate-body');
 
 module.exports = {
     asyncHandler,

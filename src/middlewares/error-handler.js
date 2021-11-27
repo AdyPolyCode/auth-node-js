@@ -1,5 +1,5 @@
 const logger = require('../utils/logger');
-const errorParser = require('../utils/errorParser');
+const errorParser = require('../utils/error-parser');
 
 const errorHandler = (err, req, res, next) => {
     const { statusCode, message } = errorParser(err);
