@@ -1,8 +1,8 @@
 const userService = require('../services/user.service');
 
 const authenticate = async (req, res, next) => {
-    const tokenString = req.headers['x-authorization'];
     try {
+        const tokenString = req.headers['x-authorization'];
         const user = await userService.getByTokenString(tokenString);
 
         req.user = user;
