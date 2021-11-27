@@ -9,9 +9,7 @@ const register = async (username, email, password) => {
 
     const user = await userService.createOne(username, email, hash, salt);
 
-    const tokenString = encryptionService.createUniqueToken(user.id);
-
-    const token = await tokenService.createToken(user.id, tokenString);
+    const token = await tokenService.createToken(user.id);
 
     return { user, token };
 };
@@ -21,9 +19,7 @@ const login = async (email, password) => {
 
     encryptionService.comparePassword(user.salt, password, user.hashedPassword);
 
-    const tokenString = encryptionService.createUniqueToken();
-
-    const token = await tokenService.createToken(user.id, tokenString);
+    const token = await tokenService.createToken(user.id);
 
     return { user, token };
 };
