@@ -1,7 +1,7 @@
-const registerUser = require('./registerUser');
-const loginUser = require('./loginUser');
-const createProduct = require('./createProduct');
-const updateProduct = require('./updateProduct');
+const registerUser = require('./register-user');
+const loginUser = require('./login-user');
+const createProduct = require('./create-product');
+const updateProduct = require('./update-product');
 
 module.exports = {
     registerUser,
