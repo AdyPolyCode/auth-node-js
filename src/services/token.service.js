@@ -1,10 +1,13 @@
 const { PrismaClient } = require('@prisma/client');
 
 const { UnAuthorized } = require('../errors');
+const { createUniqueToken } = require('./encryption.service');
 
 const Token = new PrismaClient().token;
 
-const createToken = async (userId, tokenString) => {
+const createToken = async (userId) => {
+    const tokenString = createUniqueToken(userId);
+
     const token = await Token.create({
         data: {
             userId,
