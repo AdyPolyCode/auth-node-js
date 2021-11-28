@@ -1,8 +1,8 @@
-const BadRequest = require('./badRequest');
-const CustomError = require('./customError');
-const NotFound = require('./notFound');
-const UnAuthorized = require('./unAuthorized');
-const ValidationError = require('./validationError');
+const BadRequest = require('./bad-request');
+const CustomError = require('./custom-error');
+const NotFound = require('./not-found');
+const UnAuthorized = require('./unauthorized');
+const ValidationError = require('./validation-error');
 
 module.exports = {
     CustomError,

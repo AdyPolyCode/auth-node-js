@@ -1,5 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
-const CustomError = require('./customError');
+const CustomError = require('./custom-error');
 
 class ValidationError extends CustomError {
     constructor(message) {
