@@ -15,15 +15,15 @@ const createSalt = () => {
 };
 
 const comparePassword = (salt, password, hashedPassword) => {
-    const hash = createHmac('sha256', password).update(salt).digest('hex');
+    const hash = createHash(salt, password);
 
     if (hash !== hashedPassword) {
         throw new UnAuthorized('Invalid credentials');
     }
 };
 
-const createUniqueToken = () => {
-    const uuidTimestamp = uuidv4() + Math.floor(Date.now() / 1000);
+const createUniqueToken = (userId) => {
+    const uuidTimestamp = uuidv4() + userId + Math.floor(Date.now() / 1000);
 
     return uuidTimestamp;
 };
