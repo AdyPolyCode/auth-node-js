@@ -30,10 +30,22 @@ const logout = async (tokenString) => {
     await tokenService.deactivateToken(token.tokenString);
 };
 
+const sendConfirmationMail = async (email) => {};
+
+const sendPasswordResetMail = async (email) => {};
+
+const changePassword = async (tokenString) => {};
+
+const confirmMail = async () => {};
+
 const authService = {
     register,
     login,
     logout,
+    sendConfirmationMail,
+    sendPasswordResetMail,
+    changePassword,
+    confirmMail,
 };
 
 module.exports = authService;
