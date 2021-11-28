@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const { NotFound } = require('../errors');
+const { NotFound, UnAuthorized } = require('../errors');
 
 const User = new PrismaClient().user;
 
@@ -70,6 +70,7 @@ const getByTokenString = async (tokenString) => {
         where: {
             token: {
                 some: {
+                    active: true,
                     tokenString,
                 },
             },
@@ -77,7 +78,7 @@ const getByTokenString = async (tokenString) => {
     });
 
     if (!user) {
-        throw new NotFound(`User with ${tokenString} was not found`);
+        throw new UnAuthorized(`${tokenString} is invalid`);
     }
 
     return user;
