@@ -4,7 +4,7 @@ const CustomError = require('./customError');
 class ValidationError extends CustomError {
     constructor(message) {
         super(message);
-        this.statusCode = StatusCodes.NOT_ACCEPTABLE;
+        this.statusCode = StatusCodes.UNPROCESSABLE_ENTITY;
     }
 }
 
