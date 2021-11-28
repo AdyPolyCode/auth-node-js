@@ -1,5 +1,4 @@
 const { asyncHandler } = require('../middlewares');
-const { UnAuthorized, CustomError } = require('../errors');
 const authService = require('../services/auth.service');
 
 const login = asyncHandler(async (req, res, next) => {
@@ -22,7 +21,13 @@ const login = asyncHandler(async (req, res, next) => {
 });
 
 const register = asyncHandler(async (req, res, next) => {
-    const { user, token } = await authService.register(req.body);
+    const { username, email, password } = req.body;
+
+    const { user, token } = await authService.register(
+        username,
+        email,
+        password
+    );
 
     res.status(201).json({
         message: `${user.username} successfully created`,
