@@ -2,14 +2,14 @@ const encryptionService = require('./encryption.service');
 const userService = require('./user.service');
 const tokenService = require('./token.service');
 
-const register = async ({ username, email, password }) => {
+const register = async (username, email, password) => {
     const salt = encryptionService.createSalt();
 
     const hash = encryptionService.createHash(salt, password);
 
     const user = await userService.createOne(username, email, hash, salt);
 
-    const tokenString = encryptionService.createUniqueToken();
+    const tokenString = encryptionService.createUniqueToken(user.id);
 
     const token = await tokenService.createToken(user.id, tokenString);
 
