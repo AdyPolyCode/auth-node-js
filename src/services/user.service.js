@@ -70,7 +70,7 @@ const getByTokenString = async (tokenString) => {
         where: {
             token: {
                 some: {
-                    active: true,
+                    isActive: true,
                     tokenString,
                 },
             },
