@@ -24,7 +24,7 @@ const deactivateToken = async (tokenString) => {
             tokenString,
         },
         data: {
-            active: false,
+            isActive: false,
         },
     });
 };
@@ -32,7 +32,7 @@ const deactivateToken = async (tokenString) => {
 const getByTokenString = async (tokenString) => {
     const token = await Token.findFirst({
         where: {
-            active: true,
+            isActive: true,
             tokenString,
         },
     });
