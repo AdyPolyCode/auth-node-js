@@ -1,6 +1,6 @@
 const joi = require('joi');
 
-const registerUser = joi.object({
+const userRegister = joi.object({
     username: joi
         .string()
         .alphanum()
@@ -20,4 +20,4 @@ const registerUser = joi.object({
         .required(),
 });
 
-module.exports = registerUser;
+module.exports = userRegister;

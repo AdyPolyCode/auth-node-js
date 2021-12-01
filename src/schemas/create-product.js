@@ -1,6 +1,6 @@
 const joi = require('joi');
 
-const createProduct = joi.object({
+const productCreate = joi.object({
     name: joi
         .string()
         .alphanum()
@@ -15,4 +15,4 @@ const createProduct = joi.object({
     price: joi.number().required(),
 });
 
-module.exports = createProduct;
+module.exports = productCreate;

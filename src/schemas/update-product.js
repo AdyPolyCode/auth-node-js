@@ -1,6 +1,6 @@
 const joi = require('joi');
 
-const updateProduct = joi
+const productUpdate = joi
     .object({
         name: joi
             .string()
@@ -17,4 +17,4 @@ const updateProduct = joi
     .min(1)
     .message('Enter at least one value');
 
-module.exports = updateProduct;
+module.exports = productUpdate;
