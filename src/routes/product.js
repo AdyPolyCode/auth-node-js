@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { validateBody } = require('../middlewares');
-const { createProduct, updateProduct } = require('../schemas');
+const { productCreate, productUpdate } = require('../schemas');
 
 const {
     getAll,
@@ -10,12 +10,12 @@ const {
     deleteOne,
 } = require('../controllers/product');
 
-router.route('/').get(getAll).post(validateBody(createProduct), createOne);
+router.route('/').get(getAll).post(validateBody(productCreate), createOne);
 
 router
     .route('/:id')
     .get(getOne)
-    .put(validateBody(updateProduct), updateOne)
+    .put(validateBody(productUpdate), updateOne)
     .delete(deleteOne);
 
 module.exports = router;
