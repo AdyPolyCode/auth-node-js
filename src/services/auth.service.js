@@ -29,10 +29,10 @@ const sendPasswordResetMail = async (email, options) => {
     await mailService.sendEmail(email, 'password-reset', generatedUrl);
 };
 
-const changePassword = async (tokenString, password1, password2) => {
+const changePassword = async (tokenString, password) => {
     const user = await userService.getByTokenString(tokenString);
 
-    const hashedPassword = encryptionService.createHash(user.salt, password1);
+    const hashedPassword = encryptionService.createHash(user.salt, password);
 
     await userService.updateOne(user.id, {
         hashedPassword,
