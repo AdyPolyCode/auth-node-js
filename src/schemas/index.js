@@ -1,11 +1,15 @@
-const registerUser = require('./register-user');
-const loginUser = require('./login-user');
-const createProduct = require('./create-product');
-const updateProduct = require('./update-product');
+const userRegister = require('./register-user');
+const userLogin = require('./login-user');
+const productCreate = require('./create-product');
+const productUpdate = require('./update-product');
+const passwordReset = require('./reset-password');
+const passwordForgot = require('./forgot-password');
 
 module.exports = {
-    registerUser,
-    loginUser,
-    createProduct,
-    updateProduct,
+    userRegister,
+    userLogin,
+    productCreate,
+    productUpdate,
+    passwordReset,
+    passwordForgot,
 };
