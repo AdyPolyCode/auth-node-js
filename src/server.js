@@ -31,10 +31,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/auth', authRouter);
 app.use('/api/products', auth, productRouter);
 
-app.get('/home', (req, res) => {
-    res.render('password-reset', { value: 'value' });
-});
-
 // apply error handlers
 app.use(notFoundHandler);
 app.use(errorHandler);
