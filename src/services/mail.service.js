@@ -1,7 +1,24 @@
 const nodemailer = require('nodemailer');
 const { CustomError } = require('../errors');
 
-const sendEmail = async (email, type, data) => {
+const messages = {
+    'mail-confirmation':
+        'Please confirm this email so you can enjoy our services - ',
+    'password-reset': 'Here is your reset password email - ',
+};
+
+const options = {
+    'mail-confirmation': {
+        host: `${process.env.NODE_HOST}:${process.env.NODE_PORT}`,
+        path: '/api/auth/mail-confirmation',
+    },
+    'password-reset': {
+        host: `${process.env.NODE_HOST}:${process.env.NODE_PORT}`,
+        path: '/api/auth/password-reset',
+    },
+};
+
+const sendEmail = async (email, type, tokenString) => {
     try {
         const transport = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
@@ -13,35 +30,23 @@ const sendEmail = async (email, type, data) => {
             },
         });
 
-        const message = await transport.sendMail({
+        const { host, path } = options[type];
+
+        const url = `http://${host}${path}/${tokenString}`;
+
+        const message = messages[type].concat(url);
+
+        await transport.sendMail({
             from: process.env.MAIL_FROM,
             to: email,
             subject: type,
-            text: data,
+            text: message,
         });
     } catch (error) {
-        throw new CustomError('Could not send email', 500);
+        throw new CustomError('Could not send the email', 500);
     }
 };
 
-const generateUrl = (options, type, tokenString) => {
-    const { host, path } = options;
-
-    const confirmUrl = `http://${host}${path}/${tokenString}`;
-
-    let message;
-
-    if (type === 'mail-confirmation') {
-        message = 'Please confirm this email so you can enjoy our services - ';
-    } else if (type === 'password-reset') {
-        message = 'Here is your reset password email - ';
-    }
-
-    message = message.concat(confirmUrl);
-
-    return message;
-};
-
-const mailService = { sendEmail, generateUrl };
+const mailService = { sendEmail };
 
 module.exports = mailService;
