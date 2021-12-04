@@ -16,10 +16,11 @@
 
 Authentication based assignment project.
 Purpose of the project was to get acquainted with authentication and learn how it works.
-API provides data manipulation only for users who are either signed in or with already created
+API provides data manipulation only for users who are either signed in or has already created an
 account that is need to be logged in for access and modification.
 This kind of authorization is enabled with custom tokens which are generated for every single user.
-Crud operations on products can be made only by valid users.
+API also provides verification for newly created accounts.
+Crud operations on products can be made only by valid & authenticated users.
 
 ### Features
 
@@ -35,7 +36,11 @@ Crud operations on products can be made only by valid users.
 
     -   Logout
 
+    -   Account confirmation
+
 -   Custom token based authentication
+
+-   Password reset
 
 -   Request body validation
 
@@ -61,11 +66,19 @@ Steps:
 
 -   install dependencies
 
+-   set up the environment file
+
+    -   create .env
+
+    -   add variables manually
+
 -   run project in development mode
 
 ```shell
 
 $ npm i
+
+$ touch .env
 
 $ npm run dev
 
