@@ -3,14 +3,6 @@ const userService = require('./user.service');
 const tokenService = require('./token.service');
 const mailService = require('./mail.service');
 
-const sendPasswordResetMail = async (email) => {
-    const user = await userService.getByEmail(email);
-
-    const { tokenString } = await tokenService.createToken(user.id);
-
-    await mailService.sendEmail(email, 'password-reset', tokenString);
-};
-
 const changePassword = async (tokenString, password) => {
     const user = await userService.getByTokenString(tokenString);
 
@@ -31,6 +23,14 @@ const confirmMail = async (mailToken) => {
     await userService.updateOne(user.id, { isVerified: true });
 
     await tokenService.deactivateToken(mailToken);
+};
+
+const forgotPassword = async (email) => {
+    const user = await userService.getByEmail(email);
+
+    const mailToken = await tokenService.createToken(user.id);
+
+    await mailService.sendEmail(email, 'password-reset', mailToken.tokenString);
 };
 
 const register = async (username, email, password) => {
@@ -73,7 +73,7 @@ const authService = {
     register,
     login,
     logout,
-    sendPasswordResetMail,
+    forgotPassword,
     changePassword,
     confirmMail,
 };
