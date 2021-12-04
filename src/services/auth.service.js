@@ -3,30 +3,12 @@ const userService = require('./user.service');
 const tokenService = require('./token.service');
 const mailService = require('./mail.service');
 
-const sendConfirmationMail = async (email, id, options) => {
-    const { tokenString } = await tokenService.createToken(id);
-
-    const generatedUrl = mailService.generateUrl(
-        options,
-        'mail-confirmation',
-        tokenString
-    );
-
-    await mailService.sendEmail(email, 'mail-confirmation', generatedUrl);
-};
-
-const sendPasswordResetMail = async (email, options) => {
+const sendPasswordResetMail = async (email) => {
     const user = await userService.getByEmail(email);
 
     const { tokenString } = await tokenService.createToken(user.id);
 
-    const generatedUrl = mailService.generateUrl(
-        options,
-        'mail-confirmation',
-        tokenString
-    );
-
-    await mailService.sendEmail(email, 'password-reset', generatedUrl);
+    await mailService.sendEmail(email, 'password-reset', tokenString);
 };
 
 const changePassword = async (tokenString, password) => {
@@ -43,26 +25,32 @@ const changePassword = async (tokenString, password) => {
     return user;
 };
 
-const confirmMail = async (tokenString) => {
-    const user = await userService.getByTokenString(tokenString);
+const confirmMail = async (mailToken) => {
+    const user = await userService.getByTokenString(mailToken);
 
     await userService.updateOne(user.id, { isVerified: true });
 
-    await tokenService.deactivateToken(tokenString);
+    await tokenService.deactivateToken(mailToken);
 };
 
-const register = async (username, email, password, options) => {
+const register = async (username, email, password) => {
     const salt = encryptionService.createSalt();
 
     const hash = encryptionService.createHash(salt, password);
 
     const user = await userService.createOne(username, email, hash, salt);
 
-    const token = await tokenService.createToken(user.id);
+    const authToken = await tokenService.createToken(user.id);
 
-    await sendConfirmationMail(user.email, user.id, options);
+    const mailToken = await tokenService.createToken(user.id);
 
-    return { user, token };
+    await mailService.sendEmail(
+        email,
+        'mail-confirmation',
+        mailToken.tokenString
+    );
+
+    return { user, authToken };
 };
 
 const login = async (email, password) => {
@@ -85,7 +73,6 @@ const authService = {
     register,
     login,
     logout,
-    sendConfirmationMail,
     sendPasswordResetMail,
     changePassword,
     confirmMail,
