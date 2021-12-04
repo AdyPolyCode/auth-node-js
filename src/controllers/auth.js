@@ -21,22 +21,16 @@ const login = asyncHandler(async (req, res, next) => {
 const register = asyncHandler(async (req, res, next) => {
     const { username, email, password } = req.body;
 
-    const options = {
-        host: req.get('host'),
-        path: '/api/auth/mail-confirmation',
-    };
-
-    const { user, token } = await authService.register(
+    const { user, authToken } = await authService.register(
         username,
         email,
-        password,
-        options
+        password
     );
 
     res.status(201).json({
         message: `${user.username} successfully created & confirmation email sent`,
         data: {
-            token: token.tokenString,
+            token: authToken.tokenString,
         },
     });
 });
@@ -46,21 +40,13 @@ const logout = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         message: 'Successfully logged out',
-        data: {
-            token: '',
-        },
     });
 });
 
 const forgotPassword = asyncHandler(async (req, res, next) => {
     const { email } = req.body;
 
-    const options = {
-        host: req.get('host'),
-        path: '/api/auth/password-reset',
-    };
-
-    await authService.sendPasswordResetMail(email, options);
+    await authService.sendPasswordResetMail(email);
 
     res.status(200).json({ message: 'Reset password email successfully sent' });
 });
@@ -70,13 +56,9 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 
     const { password1, password2 } = req.body;
 
-    const user = await authService.changePassword(
-        resetToken,
-        password1,
-        password2
-    );
+    await authService.changePassword(resetToken, password1, password2);
 
-    res.status(200).json({ message: 'Password successfully changed', user });
+    res.status(200).json({ message: 'Password successfully changed' });
 });
 
 const confirmMail = asyncHandler(async (req, res, next) => {
@@ -88,7 +70,10 @@ const confirmMail = asyncHandler(async (req, res, next) => {
 });
 
 function renderConfirmMail(req, res) {
-    const url = `http://${req.get('host')}/api/auth${req.path}`;
+    const { mailToken } = req.params;
+
+    const host = `${process.env.NODE_HOST}:${process.env.NODE_PORT}`;
+    const url = `http://${host}/api/auth/mail-confirmation/${mailToken}`;
 
     res.render('mail-confirmation', {
         title: 'Mail-Confirmation',
@@ -97,7 +82,10 @@ function renderConfirmMail(req, res) {
 }
 
 function renderResetPassword(req, res) {
-    const url = `http://${req.get('host')}/api/auth${req.path}`;
+    const { mailToken } = req.params;
+
+    const host = `${process.env.NODE_HOST}:${process.env.NODE_PORT}`;
+    const url = `http://${host}/api/auth/password-reset//${mailToken}`;
 
     res.render('password-reset', {
         title: 'Password-Reset',
