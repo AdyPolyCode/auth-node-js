@@ -38,6 +38,8 @@ const sendEmail = async (email, type, tokenString) => {
             subject: type,
             text: message,
         });
+
+        return url;
     } catch (error) {
         throw new CustomError('Could not send the email', 500);
     }
