@@ -21,7 +21,7 @@ const login = asyncHandler(async (req, res, next) => {
 const register = asyncHandler(async (req, res, next) => {
     const { username, email, password } = req.body;
 
-    const { user, authToken } = await authService.register(
+    const { user, authToken, url } = await authService.register(
         username,
         email,
         password
@@ -31,6 +31,7 @@ const register = asyncHandler(async (req, res, next) => {
         message: `${user.username} successfully created & confirmation email sent`,
         data: {
             token: authToken.tokenString,
+            url,
         },
     });
 });
@@ -46,9 +47,12 @@ const logout = asyncHandler(async (req, res, next) => {
 const forgotPassword = asyncHandler(async (req, res, next) => {
     const { email } = req.body;
 
-    await authService.sendPasswordResetMail(email);
+    const url = await authService.forgotPassword(email);
 
-    res.status(200).json({ message: 'Reset password email successfully sent' });
+    res.status(200).json({
+        message: 'Reset password email successfully sent',
+        url,
+    });
 });
 
 const resetPassword = asyncHandler(async (req, res, next) => {
