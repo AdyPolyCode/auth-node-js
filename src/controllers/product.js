@@ -3,11 +3,12 @@ const { asyncHandler } = require('../middlewares');
 const productService = require('../services/product.service');
 
 const getAll = asyncHandler(async (req, res, next) => {
-    const products = await productService.getAll(req.query);
+    const { products, page } = await productService.getAll(req.query);
 
     res.status(200).json({
         message: 'Successfully fetched',
         data: products,
+        page,
         count: products.length,
     });
 });
