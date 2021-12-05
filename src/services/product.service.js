@@ -1,28 +1,21 @@
 const { PrismaClient } = require('@prisma/client');
 
+const queryParser = require('../utils/query-parser');
 const { NotFound } = require('../errors');
 
 const Product = new PrismaClient().product;
 
 const getAll = async (options) => {
-    let { page } = options;
-
-    page &&= parseInt(page, 10);
-
-    page ||= 1;
-
-    const skip = (page - 1) * 3;
-    const take = 4;
+    const queries = queryParser(options);
 
     const products = await Product.findMany({
-        skip,
-        take,
-        orderBy: {
-            createdAt: 'desc',
-        },
+        skip: queries.skip,
+        take: queries.take,
+        orderBy: queries.orderBy,
+        where: queries.where,
     });
 
-    return products;
+    return { products, page: queries.page };
 };
 
 const getOne = async (productId) => {
