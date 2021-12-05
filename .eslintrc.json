@@ -21,7 +21,8 @@
         "object-curly-newline": "off",
         "consistent-return": "warn",
         "no-unused-vars": "warn",
-        "multiline-comment-style": "off"
+        "multiline-comment-style": "off",
+        "operator-linebreak": "warn"
     },
 
     "plugins": [],
