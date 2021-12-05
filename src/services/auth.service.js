@@ -30,7 +30,13 @@ const forgotPassword = async (email) => {
 
     const mailToken = await tokenService.createToken(user.id);
 
-    await mailService.sendEmail(email, 'password-reset', mailToken.tokenString);
+    const url = await mailService.sendEmail(
+        email,
+        'password-reset',
+        mailToken.tokenString
+    );
+
+    return url;
 };
 
 const register = async (username, email, password) => {
@@ -44,13 +50,13 @@ const register = async (username, email, password) => {
 
     const mailToken = await tokenService.createToken(user.id);
 
-    await mailService.sendEmail(
+    const url = await mailService.sendEmail(
         email,
         'mail-confirmation',
         mailToken.tokenString
     );
 
-    return { user, authToken };
+    return { user, authToken, url };
 };
 
 const login = async (email, password) => {
