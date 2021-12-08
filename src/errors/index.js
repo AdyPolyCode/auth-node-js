@@ -3,6 +3,7 @@ const CustomError = require('./custom-error');
 const NotFound = require('./not-found');
 const UnAuthorized = require('./unauthorized');
 const ValidationError = require('./validation-error');
+const Forbidden = require('./forbidden');
 
 module.exports = {
     CustomError,
@@ -10,4 +11,5 @@ module.exports = {
     NotFound,
     UnAuthorized,
     ValidationError,
+    Forbidden,
 };
