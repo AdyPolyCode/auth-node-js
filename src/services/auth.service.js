@@ -12,7 +12,7 @@ const changePassword = async (tokenString, password) => {
         hashedPassword,
     });
 
-    await tokenService.deactivateToken(tokenString);
+    await tokenService.deactivateMany(tokenString);
 
     return user;
 };
@@ -22,13 +22,13 @@ const confirmMail = async (mailToken) => {
 
     await userService.updateOne(user.id, { isVerified: true });
 
-    await tokenService.deactivateToken(mailToken);
+    await tokenService.deactivateOne(mailToken);
 };
 
 const forgotPassword = async (email) => {
     const user = await userService.getByEmail(email);
 
-    const mailToken = await tokenService.createToken(user.id);
+    const mailToken = await tokenService.createOne(user.id);
 
     const url = await mailService.sendEmail(
         email,
@@ -46,9 +46,9 @@ const register = async (username, email, password) => {
 
     const user = await userService.createOne(username, email, hash, salt);
 
-    const authToken = await tokenService.createToken(user.id);
+    const authToken = await tokenService.createOne(user.id);
 
-    const mailToken = await tokenService.createToken(user.id);
+    const mailToken = await tokenService.createOne(user.id);
 
     const url = await mailService.sendEmail(
         email,
@@ -64,7 +64,7 @@ const login = async (email, password) => {
 
     encryptionService.comparePassword(user.salt, password, user.hashedPassword);
 
-    const token = await tokenService.createToken(user.id);
+    const token = await tokenService.createOne(user.id);
 
     return { user, token };
 };
@@ -72,7 +72,7 @@ const login = async (email, password) => {
 const logout = async (tokenString) => {
     const token = await tokenService.getByTokenString(tokenString);
 
-    await tokenService.deactivateToken(token.tokenString);
+    await tokenService.deactivateOne(token.tokenString);
 };
 
 const authService = {
