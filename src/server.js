@@ -2,23 +2,14 @@ require('dotenv').config();
 
 const morgan = require('morgan');
 const express = require('express');
-const hbs = require('express-handlebars');
-const path = require('path');
 const logger = require('./utils/logger');
 
 const app = express();
 
-const { errorHandler, notFoundHandler, auth } = require('./middlewares');
+const { errorHandler, notFoundHandler } = require('./middlewares');
 
 const productRouter = require('./routes/product');
 const authRouter = require('./routes/auth');
-
-// apply settings for view engine
-app.engine('hbs', hbs.engine({ extname: 'hbs', defaultLayout: 'main' }));
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'templates'));
-
-// apply middlewares for application
 
 // other middlewares
 app.use(morgan('dev'));
@@ -29,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // routers
 app.use('/api/auth', authRouter);
-app.use('/api/products', auth, productRouter);
+app.use('/api/products', productRouter);
 
 // apply error handlers
 app.use(notFoundHandler);
