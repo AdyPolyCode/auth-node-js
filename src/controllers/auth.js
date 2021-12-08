@@ -73,37 +73,11 @@ const confirmMail = asyncHandler(async (req, res, next) => {
     res.status(200).json({ message: 'Email successfully confirmed' });
 });
 
-function renderConfirmMail(req, res) {
-    const { mailToken } = req.params;
-
-    const host = `${process.env.NODE_HOST}:${process.env.NODE_PORT}`;
-    const url = `http://${host}/api/auth/mail-confirmation/${mailToken}`;
-
-    res.render('mail-confirmation', {
-        title: 'Mail-Confirmation',
-        url,
-    });
-}
-
-function renderResetPassword(req, res) {
-    const { mailToken } = req.params;
-
-    const host = `${process.env.NODE_HOST}:${process.env.NODE_PORT}`;
-    const url = `http://${host}/api/auth/password-reset//${mailToken}`;
-
-    res.render('password-reset', {
-        title: 'Password-Reset',
-        url,
-    });
-}
-
 module.exports = {
     login,
     register,
     logout,
     forgotPassword,
     resetPassword,
-    renderResetPassword,
     confirmMail,
-    renderConfirmMail,
 };
