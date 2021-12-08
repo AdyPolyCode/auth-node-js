@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { validateBody } = require('../middlewares');
+const { validateBody, auth } = require('../middlewares');
 const { productCreate, productUpdate } = require('../schemas');
 
 const {
@@ -10,12 +10,15 @@ const {
     deleteOne,
 } = require('../controllers/product');
 
-router.route('/').get(getAll).post(validateBody(productCreate), createOne);
+router
+    .route('/')
+    .get(auth('USER', 'ADMIN'), getAll)
+    .post(auth('ADMIN'), validateBody(productCreate), createOne);
 
 router
     .route('/:id')
-    .get(getOne)
-    .put(validateBody(productUpdate), updateOne)
-    .delete(deleteOne);
+    .get(auth('USER', 'ADMIN'), getOne)
+    .put(auth('ADMIN'), validateBody(productUpdate), updateOne)
+    .delete(auth('ADMIN'), deleteOne);
 
 module.exports = router;
