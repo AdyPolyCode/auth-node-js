@@ -1,21 +1,29 @@
 const userService = require('../services/user.service');
-const { BadRequest } = require('../errors');
+const { BadRequest, UnAuthorized } = require('../errors');
 
-const authenticate = async (req, res, next) => {
-    try {
-        const tokenString = req.headers['x-authorization'];
-        const user = await userService.getByTokenString(tokenString);
+const authenticate =
+    (...userRole) =>
+    async (req, res, next) => {
+        try {
+            const tokenString = req.headers['x-authorization'];
+            const { isVerified, role, id } = await userService.getByTokenString(
+                tokenString
+            );
 
-        if (!user.isVerified) {
-            next(new BadRequest('Please confirm your email'));
+            if (!isVerified) {
+                next(new BadRequest('Please confirm your email'));
+            }
+
+            if (!userRole.includes(role)) {
+                next(new UnAuthorized('Not allowed to do this method'));
+            }
+
+            req.userId = id;
+
+            next();
+        } catch (error) {
+            next(error);
         }
-
-        req.user = user;
-
-        next();
-    } catch (error) {
-        next(error);
-    }
-};
+    };
 
 module.exports = authenticate;
