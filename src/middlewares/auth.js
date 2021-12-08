@@ -1,5 +1,5 @@
 const userService = require('../services/user.service');
-const { BadRequest, UnAuthorized } = require('../errors');
+const { BadRequest, Forbidden } = require('../errors');
 
 const authenticate =
     (...userRole) =>
@@ -15,7 +15,7 @@ const authenticate =
             }
 
             if (!userRole.includes(role)) {
-                next(new UnAuthorized('Not allowed to do this method'));
+                next(new Forbidden('Not allowed to do this method'));
             }
 
             req.userId = id;
