@@ -5,7 +5,7 @@ const { createUniqueToken } = require('./encryption.service');
 
 const Token = new PrismaClient().token;
 
-const createToken = async (userId) => {
+const createOne = async (userId) => {
     const tokenString = createUniqueToken(userId);
 
     const token = await Token.create({
@@ -18,10 +18,21 @@ const createToken = async (userId) => {
     return token;
 };
 
-const deactivateToken = async (tokenString) => {
+const deactivateOne = async (tokenString) => {
     await Token.update({
         where: {
             tokenString,
+        },
+        data: {
+            isActive: false,
+        },
+    });
+};
+
+const deactivateMany = async (userId) => {
+    await Token.updateMany({
+        where: {
+            userId,
         },
         data: {
             isActive: false,
@@ -45,8 +56,9 @@ const getByTokenString = async (tokenString) => {
 };
 
 const tokenService = {
-    createToken,
-    deactivateToken,
+    createOne,
+    deactivateOne,
+    deactivateMany,
     getByTokenString,
 };
 
