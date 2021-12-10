@@ -15,12 +15,16 @@
 ### General-Information
 
 Authentication based assignment project.
-Purpose of the project was to get acquainted with authentication and learn how it works.
-API provides data manipulation only for users who are either signed in or has already created an
-account that is need to be logged in for access and modification.
+The purpose of this project was to get acquainted with authentication and learn how it works.
+Also to learn about other technologies as RabbitMQ & PrismaORM.
+API provides data manipulation only for users who are either signed in & has verified account or has
+already created an account that is need to be logged in for access and modification.
 This kind of authorization is enabled with custom tokens which are generated for every single user.
 API also provides verification for newly created accounts.
 Crud operations on products can be made only by valid & authenticated users.
+Database can store 2 types of users:
+-BASIC: can only fetch resources from the database
+-ADMIN: can do everything
 
 ### Features
 
@@ -55,6 +59,8 @@ Crud operations on products can be made only by valid & authenticated users.
 2. Express
 
 3. Prisma ORM
+
+4. RabbitMQ
 
 ## Documentation
 
