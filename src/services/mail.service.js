@@ -52,8 +52,6 @@ const sendEmail = async (email, type, tokenString) => {
             text: message,
             html: template,
         });
-
-        return url;
     } catch (error) {
         throw new CustomError('Cannot send email', 500);
     }
