@@ -1,68 +1,48 @@
-const amqp = require('amqplib/callback_api');
-const mailService = require('./mail.service');
+const amqp = require('amqplib');
 
 /* eslint-disable */
-const send = (data) => {
-    amqp.connect((err, connection) => {
-        if (err) throw err;
+const send = async (data) => {
+    try {
+        const message = JSON.stringify(data);
 
-        connection.createChannel((err, channel) => {
-            if (err) throw err;
+        const connection = await amqp.connect(process.env.RABBIT_URL);
 
-            channel.assertQueue(
-                process.env.RABBIT_QUEUE,
-                { durable: true },
-                (err, ok) => {
-                    if (err) throw err;
-                }
-            );
+        const channel = await connection.createChannel();
 
-            const message = JSON.stringify(data);
+        channel.assertQueue(process.env.RABBIT_QUEUE, { durable: true });
 
-            channel.sendToQueue(
-                process.env.RABBIT_QUEUE,
-                Buffer.from(message),
-                { contentType: 'application/json' }
-            );
+        channel.sendToQueue(process.env.RABBIT_QUEUE, Buffer.from(message), {
+            contentType: 'application/json',
         });
-    });
+    } catch (error) {
+        throw error;
+    }
 };
 
-const receive = () => {
-    amqp.connect((err, connection) => {
-        if (err) throw err;
+const receive = async (data) => {
+    try {
+        const connection = await amqp.connect(process.env.RABBIT_URL);
 
-        connection.createChannel((err, channel) => {
-            if (err) throw err;
+        const channel = await connection.createChannel();
 
-            channel.assertQueue(
-                process.env.RABBIT_QUEUE,
-                { durable: true },
-                (err, ok) => {
-                    if (err) throw err;
-                }
-            );
+        channel.assertQueue(process.env.RABBIT_QUEUE, { durable: true });
 
-            channel.consume(
-                process.env.RABBIT_QUEUE,
-                async (msg) => {
-                    const { email, type, tokenString } = JSON.parse(
-                        msg.content.toString()
-                    );
+        channel.consume(process.env.RABBIT_QUEUE, async (msg) => {
+            const options = JSON.parse(msg.content.toString());
 
-                    try {
-                        await mailService.sendEmail(email, type, tokenString);
+            try {
+                await data.sendMail(options);
 
-                        channel.ack(msg);
-                    } catch (error) {
-                        channel.nack(msg);
-                        throw error;
-                    }
-                },
-                { noAck: false }
-            );
+                channel.ack(msg);
+            } catch (error) {
+                channel.nack(msg);
+
+                throw error;
+            }
         });
-    });
+    } catch (error) {
+        throw error;
+    }
 };
 /* eslint-enable */
 
