@@ -1,3 +1,5 @@
+const { BadRequest } = require('../errors');
+
 const baseOptions = {
     limit: 4,
     page: 1,
@@ -6,15 +8,44 @@ const baseOptions = {
     },
 };
 
+const types = {
+    limit: 'number',
+    page: 'number',
+    filter: 'string',
+    sort: 'string',
+};
+
+function validateQuery(queryOptions) {
+    Object.keys(queryOptions).forEach((key) => {
+        if (!types[key]) {
+            throw new BadRequest(`Invalid search value - "${key}"`);
+        }
+    });
+}
+
+function convertQueryValues(queryOptions) {
+    validateQuery(queryOptions);
+
+    const options = {};
+
+    Object.keys(queryOptions).forEach((key) => {
+        if (!isNaN(queryOptions[key])) {
+            options[key] = Math.abs(queryOptions[key]);
+        } else {
+            options[key] = queryOptions[key];
+        }
+    });
+
+    return options;
+}
+
 module.exports = function queryParser(queryOptions) {
-    const { limit, page, filter, sort } = queryOptions;
+    const { limit, page, filter, sort } = convertQueryValues(queryOptions);
 
     const options = {
-        take: Number(limit) || baseOptions.limit,
-        page: Number(page) || baseOptions.page,
-        skip:
-            ((Number(page) || baseOptions.page) - 1) *
-            (Number(limit) || baseOptions.limit),
+        take: limit || baseOptions.limit,
+        page: page || baseOptions.page,
+        skip: ((page || baseOptions.page) - 1) * (limit || baseOptions.limit),
         orderBy: baseOptions.sort,
     };
 
