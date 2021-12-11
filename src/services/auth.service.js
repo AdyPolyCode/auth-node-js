@@ -1,7 +1,7 @@
 const encryptionService = require('./encryption.service');
 const userService = require('./user.service');
 const tokenService = require('./token.service');
-const messageQueueService = require('./message-queue.service');
+const mailService = require('./mail.service');
 
 const changePassword = async (tokenString, password) => {
     const user = await userService.getByTokenString(tokenString);
@@ -12,7 +12,7 @@ const changePassword = async (tokenString, password) => {
         hashedPassword,
     });
 
-    await tokenService.deactivateMany(tokenString);
+    await tokenService.deactivateMany(user.id);
 
     return user;
 };
@@ -30,15 +30,13 @@ const forgotPassword = async (email) => {
 
     const mailToken = await tokenService.createOne(user.id);
 
-    messageQueueService.send({
-        email,
-        type: 'password-reset',
-        tokenString: mailToken.tokenString,
-    });
+    const url = await mailService.sendEmail(
+        user.email,
+        'password-reset',
+        mailToken.tokenString
+    );
 
-    messageQueueService.receive();
-
-    return `http://${process.env.NODE_HOST}:${process.env.NODE_PORT}/api/auth/password-reset/${mailToken.tokenString}`;
+    return url;
 };
 
 const register = async (username, email, password) => {
@@ -52,18 +50,16 @@ const register = async (username, email, password) => {
 
     const mailToken = await tokenService.createOne(user.id);
 
-    messageQueueService.send({
+    const url = await mailService.sendEmail(
         email,
-        type: 'mail-confirmation',
-        tokenString: mailToken.tokenString,
-    });
-
-    messageQueueService.receive();
+        'mail-confirmation',
+        mailToken.tokenString
+    );
 
     return {
         user,
         authToken,
-        url: `http://${process.env.NODE_HOST}:${process.env.NODE_PORT}/api/auth/mail-confirmation/${mailToken.tokenString}`,
+        url,
     };
 };
 
