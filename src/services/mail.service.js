@@ -3,6 +3,7 @@ const hbs = require('handlebars');
 const { dirname, join } = require('path');
 const { readFileSync } = require('fs');
 const { CustomError } = require('../errors');
+const messageQueueService = require('./message-queue.service');
 
 const root = dirname(__dirname);
 
@@ -45,13 +46,17 @@ const sendEmail = async (email, type, tokenString) => {
             },
         });
 
-        await transport.sendMail({
+        await messageQueueService.send({
             from: process.env.MAIL_FROM,
             to: email,
             subject: type,
             text: message,
             html: template,
         });
+
+        await messageQueueService.receive(transport);
+
+        return url;
     } catch (error) {
         throw new CustomError('Cannot send email', 500);
     }
