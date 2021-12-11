@@ -16,10 +16,12 @@ const {
 } = require('../schemas');
 
 // reset & confirm endpoints
-router.route('/mail-confirmation/:mailToken').post(confirmMail);
-router
-    .route('/password-reset/:resetToken')
-    .post(validateBody(passwordReset), resetPassword);
+router.post('/mail-confirmation/:mailToken', confirmMail);
+router.post(
+    '/password-reset/:resetToken',
+    validateBody(passwordReset),
+    resetPassword
+);
 
 // forgot endpoint
 router.post('/forgot-password', validateBody(passwordForgot), forgotPassword);
