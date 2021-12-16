@@ -13,18 +13,20 @@ const options = {
         urlPath: '/api/auth/mail-confirmation',
         templatePath: join(root, 'templates/mail-confirmation.hbs'),
         message: 'Please confirm this email so you can enjoy our services - ',
+        queueName: 'confirmation',
     },
     'password-reset': {
         host: `${process.env.NODE_HOST}:${process.env.NODE_PORT}`,
         urlPath: '/api/auth/password-reset',
         templatePath: join(root, 'templates/password-reset.hbs'),
         message: 'Here is your reset password email - ',
+        queueName: 'reset',
     },
 };
 
 const sendEmail = async (email, type, tokenString) => {
     try {
-        const { host, urlPath, templatePath } = options[type];
+        const { host, urlPath, templatePath, queueName } = options[type];
 
         const url = `http://${host}${urlPath}/${tokenString}`;
 
@@ -46,15 +48,21 @@ const sendEmail = async (email, type, tokenString) => {
             },
         });
 
-        await messageQueueService.send({
-            from: process.env.MAIL_FROM,
-            to: email,
-            subject: type,
-            text: message,
-            html: template,
-        });
+        await messageQueueService.publish(
+            {
+                from: process.env.MAIL_FROM,
+                to: email,
+                subject: type,
+                text: message,
+                html: template,
+            },
+            {
+                severity: type,
+                queueName,
+            }
+        );
 
-        await messageQueueService.receive(transport);
+        await messageQueueService.subscribe(transport, queueName);
 
         return url;
     } catch (error) {
