@@ -23,7 +23,7 @@ const getOne = asyncHandler(async (req, res, next) => {
 });
 
 const createOne = asyncHandler(async (req, res, next) => {
-    const product = await productService.createOne(req.body);
+    const product = await productService.createOne(req.userId, req.body);
 
     res.status(201).json({
         message: 'Successfully created',
@@ -32,7 +32,11 @@ const createOne = asyncHandler(async (req, res, next) => {
 });
 
 const updateOne = asyncHandler(async (req, res, next) => {
-    const product = await productService.updateOne(req.params.id, req.body);
+    const product = await productService.updateOne(
+        req.userId,
+        req.params.id,
+        req.body
+    );
 
     res.status(200).json({
         message: 'Successfully updated',
