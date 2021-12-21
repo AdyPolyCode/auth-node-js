@@ -4,6 +4,7 @@ const queryParser = require('../utils/query-parser');
 const { NotFound } = require('../errors');
 
 const Product = new PrismaClient().product;
+const User = new PrismaClient().user;
 
 const getAll = async (options) => {
     const queries = queryParser(options);
@@ -32,9 +33,14 @@ const getOne = async (productId) => {
     return product;
 };
 
-const createOne = async ({ name, description, price }) => {
+const createOne = async (userId, { name, description, price }) => {
     const product = await Product.create({
         data: {
+            user: {
+                connect: {
+                    id: userId,
+                },
+            },
             name,
             description: description || '',
             price,
@@ -44,12 +50,19 @@ const createOne = async ({ name, description, price }) => {
     return product;
 };
 
-const updateOne = async (productId, data) => {
+const updateOne = async (userId, productId, data) => {
     const product = await Product.update({
-        where: {
-            id: Number(productId) || -1,
+        data: {
+            user: {
+                connect: {
+                    id: userId,
+                },
+            },
+            ...data,
         },
-        data,
+        where: {
+            id: Number(productId),
+        },
     });
 
     if (!product) {
@@ -62,7 +75,7 @@ const updateOne = async (productId, data) => {
 const deleteOne = async (productId) => {
     const product = await Product.delete({
         where: {
-            id: Number(productId) || -1,
+            id: Number(productId),
         },
     });
 
