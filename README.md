@@ -64,7 +64,7 @@ Database can store 2 types of users:
 
 ## Documentation
 
-Soon
+-   external: https://app.swaggerhub.com/apis-docs/AdyPolyCode/auth-API/1.0.0
 
 ### Setup
 
