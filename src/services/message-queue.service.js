@@ -13,12 +13,6 @@ const publish = async (data, options) => {
             durable: true,
         });
 
-        const queue = await channel.assertQueue(options.queueName, {
-            durable: true,
-        });
-
-        channel.bindQueue(queue.queue, exchange.exchange, options.severity);
-
         channel.publish(
             exchange.exchange,
             options.severity,
@@ -38,9 +32,15 @@ const subscribe = async (data, queueName) => {
 
         const channel = await connection.createChannel();
 
+        const exchange = await channel.assertExchange('task_e', 'direct', {
+            durable: true,
+        });
+
         const queue = await channel.assertQueue(queueName, {
             durable: true,
         });
+
+        await channel.bindQueue(queue.queue, exchange.exchange, 'direct');
 
         await channel.consume(
             queue.queue,
