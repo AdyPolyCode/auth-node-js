@@ -1,7 +1,9 @@
 require('dotenv').config();
 
-const morgan = require('morgan');
 const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+
 const logger = require('./utils/logger');
 
 const app = express();
@@ -12,6 +14,12 @@ const productRouter = require('./routes/product');
 const authRouter = require('./routes/auth');
 
 // other middlewares
+app.use(
+    cors({
+        origin: '*',
+        methods: ['GET', 'POST', 'UPDATE', 'DELETE'],
+    })
+);
 app.use(morgan('dev'));
 
 // core middlewares
