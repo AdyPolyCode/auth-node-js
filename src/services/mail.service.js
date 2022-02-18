@@ -58,11 +58,13 @@ const sendEmail = async (email, type, tokenString) => {
             },
             {
                 severity: type,
-                queueName,
             }
         );
 
-        await messageQueueService.subscribe(transport, queueName);
+        await messageQueueService.subscribe(transport, {
+            queueName,
+            severity: type,
+        });
 
         return url;
     } catch (error) {
