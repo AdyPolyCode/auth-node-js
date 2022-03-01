@@ -1,5 +1,6 @@
 const { asyncHandler } = require('../middlewares');
 const authService = require('../services/auth.service');
+const userService = require('../services/user.service');
 
 const login = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;
@@ -33,6 +34,15 @@ const register = asyncHandler(async (req, res, next) => {
             token: authToken.tokenString,
             url,
         },
+    });
+});
+
+const me = asyncHandler(async (req, res, next) => {
+    const user = await userService.getOne(req.userId);
+
+    res.status(200).json({
+        message: 'Success',
+        user,
     });
 });
 
@@ -77,6 +87,7 @@ module.exports = {
     login,
     register,
     logout,
+    me,
     forgotPassword,
     resetPassword,
     confirmMail,
