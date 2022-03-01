@@ -34,7 +34,14 @@ router.post(
 router.post('/forgot-password', validateBody(passwordForgot), forgotPassword);
 
 // other user endpoints
-router.post('/login', validateBody(userLogin), checkVerification, login);
+router.post(
+    '/login',
+    validateBody(userLogin),
+    checkVerification,
+    authenticate('USER', 'ADMIN'),
+    login
+);
+
 router.post('/register', validateBody(userRegister), register);
 router.get('/logout', authenticate('USER', 'ADMIN'), logout);
 
