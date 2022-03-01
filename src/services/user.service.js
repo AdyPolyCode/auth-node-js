@@ -14,6 +14,12 @@ const getOne = async (userId) => {
         where: {
             id: userId,
         },
+        select: {
+            username: true,
+            email: true,
+            role: true,
+            product: true,
+        },
     });
 
     if (!user) {
