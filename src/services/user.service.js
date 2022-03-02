@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const { NotFound, UnAuthorized } = require('../errors');
+const { UnAuthorized, NotFound } = require('../errors');
 
 const User = new PrismaClient().user;
 
@@ -98,7 +98,7 @@ const getByEmail = async (email) => {
     });
 
     if (!user) {
-        throw new NotFound(`User with ${email} was not found`);
+        throw new UnAuthorized('Invalid credentials');
     }
 
     return user;
