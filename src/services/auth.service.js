@@ -79,10 +79,17 @@ const logout = async (tokenString) => {
     await tokenService.deactivateOne(token.tokenString);
 };
 
+const me = async (userId) => {
+    const user = await userService.getOne(userId);
+
+    return user;
+};
+
 const authService = {
     register,
     login,
     logout,
+    me,
     forgotPassword,
     changePassword,
     confirmMail,
