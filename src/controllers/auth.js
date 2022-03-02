@@ -1,6 +1,5 @@
 const { asyncHandler } = require('../middlewares');
 const authService = require('../services/auth.service');
-const userService = require('../services/user.service');
 
 const login = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;
@@ -13,6 +12,7 @@ const login = asyncHandler(async (req, res, next) => {
             user: {
                 userId: user.id,
                 username: user.username,
+                role: user.role,
             },
             token: token.tokenString,
         },
@@ -38,7 +38,7 @@ const register = asyncHandler(async (req, res, next) => {
 });
 
 const me = asyncHandler(async (req, res, next) => {
-    const user = await userService.getOne(req.userId);
+    const user = await authService.me(req.userId);
 
     res.status(200).json({
         message: 'Success',
