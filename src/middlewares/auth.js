@@ -23,15 +23,19 @@ const authenticate =
     };
 
 const checkVerification = async (req, res, next) => {
-    const { email } = req.body;
+    try {
+        const { email } = req.body;
 
-    const { isVerified } = await userService.getByEmail(email);
+        const { isVerified } = await userService.getByEmail(email);
 
-    if (!isVerified) {
-        next(new BadRequest('Please confirm your email'));
+        if (!isVerified) {
+            next(new BadRequest('Please confirm your email'));
+        }
+
+        next();
+    } catch (error) {
+        next(error);
     }
-
-    next();
 };
 
 module.exports = { authenticate, checkVerification };
