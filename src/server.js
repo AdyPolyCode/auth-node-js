@@ -17,7 +17,7 @@ const authRouter = require('./routes/auth');
 app.use(
     cors({
         origin: '*',
-        methods: ['GET', 'POST', 'UPDATE', 'DELETE'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
     })
 );
 app.use(morgan('dev'));
